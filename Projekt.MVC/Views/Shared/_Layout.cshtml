@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="container  ">
+
+        <nav class="navbar bg-dark">
+
+            <a class="navbar-brand text-white" asp-action="Administration" asp-controller="Make">Početna stranica</a>
+
+            <div class="navbar-expand-lg" >
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a asp-action="Administration" asp-controller="Model" class="nav-link text-white-50">Lista modela</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-action="create" asp-controller="Make" class="nav-link text-white-50">Dodaj proizvođača</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-action="create" asp-controller="Model" class="nav-link text-white-50">Dodaj model</a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </nav>
+
+        <div> @RenderBody() </div>
+    </div>
+</body>
+</html>

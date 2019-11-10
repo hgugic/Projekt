@@ -1,0 +1,14 @@
+﻿@model IEnumerable<VehicleMake>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="card-deck">
+
+        @foreach (var maker in Model)
+        {
+            <partial name="MakerSummary" model="maker" />
+        }
+
+    </div>
