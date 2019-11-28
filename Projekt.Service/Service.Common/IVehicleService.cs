@@ -1,6 +1,7 @@
 ﻿using Projekt.Models.Common;
 using Projekt.Service.Collate;
 using System.Collections.Generic;
+using X.PagedList;
 
 namespace Projekt.Service.Common
 {
@@ -12,9 +13,12 @@ namespace Projekt.Service.Common
 
         void SaveChanges(IVehicleMake vehicleMake);
 
-        void DeleteMake(int id);
+        void DeleteMake(IVehicleMake vehicleMake);
 
+        
         IEnumerable<IVehicleMake> GetMake();
+
+        IPagedList<IVehicleMake> FindMake(IFilter filter, ISorter sorter, IPager pager);
 
         #endregion Make
 
@@ -24,9 +28,9 @@ namespace Projekt.Service.Common
 
         void SaveChanges(IVehicleModel vehicleModel);
 
-        void DeleteModel(int id);
+        void DeleteModel(IVehicleModel vehicleModel);
 
-        IEnumerable<IVehicleModel> FindModel(IFilter filter, ISorter sorter, IPager pager);
+        IPagedList<IVehicleModel> FindModel(IFilter filter, ISorter sorter, IPager pager);
 
         #endregion Model
     }

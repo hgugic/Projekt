@@ -12,22 +12,8 @@ namespace Projekt.Service.Service.Mappings
             CreateMap<VehicleMake, IVehicleMake>();
             CreateMap<IVehicleMake, VehicleMake>();
 
-            CreateMap<Models.VehicleMake, IVehicleMake>();
-            CreateMap<IVehicleMake, Models.VehicleMake>();
-
-            CreateMap<Models.VehicleMake, VehicleMake>();
-            CreateMap<VehicleMake, Models.VehicleMake>();
-
-            CreateMap<Models.VehicleModel, IVehicleModel>();
-            CreateMap<IVehicleModel, Models.VehicleModel>();
-
             CreateMap<VehicleModel, IVehicleModel>();
             CreateMap<IVehicleModel, VehicleModel>();
-
-            CreateMap<Models.VehicleModel, VehicleModel>();
-            CreateMap<VehicleModel, Models.VehicleModel>();
-
-
         }
     }
 }

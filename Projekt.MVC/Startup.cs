@@ -32,6 +32,16 @@ namespace Projekt.MVC
 
             services.AddTransient<IVehicleService, VehicleService>();
 
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new Projekt.MVC.Mappings.MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
+
+
             services.AddMvc();
         }
 
@@ -39,6 +49,8 @@ namespace Projekt.MVC
         {
             if (env.IsDevelopment())
             {
+                app.UseExceptionHandler("/Error/");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -47,6 +59,7 @@ namespace Projekt.MVC
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
 
+            app.UseStaticFiles();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

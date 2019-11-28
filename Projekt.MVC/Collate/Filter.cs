@@ -4,6 +4,11 @@ namespace Projekt.MVC.Collate
 {
     public class Filter : IFilter
     {
+        public Filter(string search)
+        {
+            Search = search;
+        }
+
         public Filter(string search, int? makeId)
         {
             Search = search;

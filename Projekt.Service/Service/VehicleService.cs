@@ -6,6 +6,7 @@ using Projekt.Service.Common;
 using Projekt.Service.DAL;
 using Projekt.Service.DAL.Entities;
 using Projekt.Service.Service.Mappings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using X.PagedList;
@@ -25,33 +26,52 @@ namespace Projekt.Service
             mapper = AutoMapperMap.GetMapper();
         }
 
-        public void DeleteMake(int id)
+        public void DeleteMake(IVehicleMake vehicleMake)
         {
-            VehicleMake make = context.VehicleMakers.Find(id);
-            if (make != null)
+            VehicleMake make = context.VehicleMakers.FirstOrDefault(m => m == mapper.Map<VehicleMake>(vehicleMake));
+            if (make != null) 
             {
                 context.Remove(make);
                 context.SaveChanges();
             }
+            else
+            {
+                throw new ArgumentException("Vehicle make doesn't exist");
+            }
         }
 
-        public void DeleteModel(int id)
+        public void DeleteModel(IVehicleModel vehicleModel)
         {
-            VehicleModel model = context.VehicleModels.Find(id);
+            VehicleModel model = context.VehicleModels.FirstOrDefault(m => m == mapper.Map<VehicleModel>(vehicleModel));
             if (model != null)
             {
                 context.Remove(model);
                 context.SaveChanges();
+            }
+            else
+            {
+                throw new ArgumentException("Vehicle model doesn't exist");
             }
 
         }
 
         public IEnumerable<IVehicleMake> GetMake()
         {
-            return mapper.Map< IEnumerable<Models.VehicleMake>>(context.VehicleMakers.OrderBy(v => v.Name));
+            return mapper.Map<IEnumerable<IVehicleMake>>(context.VehicleMakers.OrderBy(v => v.Name)
+                                                                              .Select(x=> new VehicleMake() { Id = x.Id, Name = x.Name}));
         }
 
-        public IEnumerable<IVehicleModel> FindModel(IFilter filter, ISorter sorter, IPager pager)
+        public IPagedList<IVehicleMake> FindMake(IFilter filter, ISorter sorter, IPager pager)
+        {
+            var makers = context.VehicleMakers.Where(m => string.IsNullOrEmpty(filter.Search) ? m != null : m.Name.Contains(filter.Search))
+                                              .OrderByDescending(x => sorter.SortDirection == "dsc" ? x.Name : "")
+                                              .OrderBy(x => string.IsNullOrEmpty(sorter.SortDirection) || sorter.SortDirection == "asc" ? x.Name : "");
+
+            return mapper.Map<IEnumerable<IVehicleMake>>(makers).ToPagedList(pager.CurrentPage, pager.PageSize);
+
+        }
+
+        public IPagedList<IVehicleModel> FindModel(IFilter filter, ISorter sorter, IPager pager)
         {
             var models = context.VehicleModels.Where(m => string.IsNullOrEmpty(filter.Search) ? m!=null : m.Name.Contains(filter.Search))
                                               .Where(m => filter.MakeId == null ?  m != null : m.MakeId == filter.MakeId).Include("Make")
@@ -59,6 +79,7 @@ namespace Projekt.Service
                                               .OrderBy(x => string.IsNullOrEmpty(sorter.SortDirection) || sorter.SortDirection == "asc" ? x.Name : "");
 
             return mapper.Map<IEnumerable<IVehicleModel>>(models).ToPagedList(pager.CurrentPage, pager.PageSize);
+
         }
 
         public IVehicleMake GetMakeById(int id)

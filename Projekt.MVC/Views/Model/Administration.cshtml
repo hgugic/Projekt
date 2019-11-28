@@ -1,4 +1,4 @@
-﻿@model IPagedList<IVehicleModel>
+﻿@model IPagedList<VehicleModelViewModel>
 
     <div class="container-fluid">
         <div class="row">
@@ -8,26 +8,28 @@
             </div>
 
             <div class="col-lg-8">
-
-
                 @foreach (var vehicleModel in Model)
                 {
                     <partial name="ModelSummary" model="vehicleModel" />
                 }
+            </div>
 
+        </div>
 
-                @Html.PagedListPager(Model, page => 
-                            Url.Action("Administration", 
-                            new { makeId = ViewBag.Make, find = ViewBag.Find, sortDirection = ViewBag.SortDirection, page }), 
+        <div class="row">
+            <div class="col-lg-4"></div>
+            <div class="col-lg-8">
+                @Html.PagedListPager(Model, page =>
+                            Url.Action("Administration",
+                            new { makeId = ViewBag.Make, find = ViewBag.Find, sortDirection = ViewBag.SortDirection, page }),
                             new X.PagedList.Mvc.Common.PagedListRenderOptionsBase
                 {
                     PageClasses = new string[] { "page-link" },
                     UlElementClasses = new string[] { "pagination" },
                     LiElementClasses = new string[] { "page-item" },
-                    
+
                 })
-
             </div>
-
         </div>
+
     </div>

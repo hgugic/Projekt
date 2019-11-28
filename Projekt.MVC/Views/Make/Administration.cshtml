@@ -1,14 +1,36 @@
-﻿@model IEnumerable<VehicleMake>
+﻿@model IPagedList<VehicleMakeViewModel>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <div class="card-deck">
+    <div class="row">
+        <div class="col-lg-3">
+            <partial name="MakerSearch" />
+        </div>
 
-        @foreach (var maker in Model)
-        {
-            <partial name="MakerSummary" model="maker" />
-        }
+        <div class="card-deck col-lg-9">
 
-    </div>
+            @foreach (var maker in Model)
+            {
+                <partial name="MakerSummary" model="maker" />
+            }
+
+        </div>
+        <div class="row">
+        </div>
+        <div class="col-lg-3"></div>
+        <div class="col-9">
+
+            @Html.PagedListPager(Model, page =>
+                Url.Action("Administration",
+                new { find = ViewBag.Find, sortDirection = ViewBag.SortDirection, page }),
+                new X.PagedList.Mvc.Common.PagedListRenderOptionsBase
+            {
+                PageClasses = new string[] { "page-link" },
+                UlElementClasses = new string[] { "pagination" },
+                LiElementClasses = new string[] { "page-item" },
+
+            })
+        </div>
+        </div>

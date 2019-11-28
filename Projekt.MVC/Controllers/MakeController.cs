@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Projekt.Models;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Projekt.Models.Common;
+using Projekt.MVC.Collate;
+using Projekt.MVC.Mappings;
+using Projekt.MVC.ViewModels;
 using Projekt.Service.Common;
 
 
@@ -8,39 +12,46 @@ namespace Projekt.MVC.Controllers
     public class MakeController : Controller
     {
         private readonly IVehicleService vehicleService;
+        private readonly IMapper mapper;
 
-
-        public MakeController(IVehicleService vehicleService)
+        public MakeController(IVehicleService vehicleService, IMapper mapper)
         {
             this.vehicleService = vehicleService;
+            this.mapper = mapper;
         }
 
-        public IActionResult Administration() => View((vehicleService.GetMake()));
-
-        public IActionResult Delete(int makeId=0)
+        public IActionResult Administration(string find, string sortDirection, int page = 1)
         {
-            if (makeId == 0)
+            var makers = vehicleService.FindMake(new Filter(find), new Sorter(sortDirection), new Pager(page, 3))
+                                       .ToMappedPagedList<IVehicleMake, VehicleMakeViewModel>(mapper);
+
+            ViewBag.Find = find;
+            ViewBag.SortDirection = sortDirection;
+
+            return View(makers);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            try
             {
-                return BadRequest();
+                vehicleService.DeleteMake(vehicleService.GetMakeById(id));
+                return RedirectToAction("Administration", "Make", new { page = 1 });
             }
-            else if (vehicleService.GetMakeById(makeId) == null)
+            catch (System.ArgumentException)
             {
                 return View(NotFound());
             }
-            else
-            {
-                vehicleService.DeleteMake(makeId);
-                return RedirectToAction("Administration", "Make", new { page = 1 });
-            }
+
         }
         public ViewResult Edit(int makeId)
         {
-            return View(vehicleService.GetMakeById(makeId));
+            return View(mapper.Map<VehicleMakeViewModel>(vehicleService.GetMakeById(makeId)));
         }
 
 
         [HttpPost]
-        public IActionResult Edit(VehicleMake vehicleMakeEdit)
+        public IActionResult Edit(VehicleMakeViewModel vehicleMakeEdit)
         {
             if (ModelState.IsValid)
             {
@@ -50,7 +61,7 @@ namespace Projekt.MVC.Controllers
             return View(vehicleMakeEdit);
         }
 
-        public IActionResult Create() => View("Edit", new VehicleMake());
+        public IActionResult Create() => View("Edit", new VehicleMakeViewModel());
 
 
     }

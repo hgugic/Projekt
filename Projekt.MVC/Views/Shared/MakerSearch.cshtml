@@ -1,0 +1,23 @@
+﻿<form method="post" asp-action="Administration" asp-controller="Make">
+
+    <div class="card">
+
+        <div class="card card-body">
+            <input class="form-control mr-sm-2" type="text" name="find" value="@ViewBag.Find" placeholder="Pretraži proizvođače">
+        </div>
+
+        <div class="card card-body ">
+            <h6>Izaberite vrstu sortiranja</h6>
+            <div>
+                <input type="radio" name="SortDirection" value="asc" checked="checked"> Uzlazno<br>
+                <input type="radio" name="SortDirection" value="dsc" checked=@(ViewBag.SortDirection == "dsc")> Silazno<br>
+            </div>
+        </div>
+
+        <div class="card card-body">
+            <input class="btn btn-outline-dark" type="submit" value="Traži">
+        </div>
+
+    </div>
+
+</form>

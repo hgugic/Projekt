@@ -1,6 +1,6 @@
-﻿@model VehicleMake
+﻿@model VehicleMakeViewModel
 
-<div class="card m-4" style="min-width: 18rem; max-width:30.5%">
+<div class="card m-2" style="min-width: 15rem; max-width:30.5%">
     <div class="card-header">
         <h3>@Model.Name</h3>
     </div>
@@ -11,7 +11,7 @@
            asp-route-makeId="@Model.Id">Pogledaj modele</a>
     </div>
 
-    <div class="card-footer text-center">
+    <div class="card-body text-center">
         <div class="btn">
             <a class="btn btn-outline-dark"
                asp-action="Edit"
@@ -22,7 +22,7 @@
                onclick="return confirm('Jeste li sigurni da želite izbrisati proizvođača: @Model.Name')" 
                asp-action="Delete"
                asp-controller="Make"
-               asp-route-makeId="@Model.Id">Izbriši</a>
+               asp-route-Id="@Model.Id">Izbriši</a>
         </div>
     </div>
 
