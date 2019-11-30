@@ -13,25 +13,27 @@ namespace Projekt.MVC.Controllers
 {
     public class ModelController : Controller
     {
-        private readonly IVehicleService vehicleService;
+        private readonly IVehicleModelService modelService;
+        private readonly IVehicleMakeService makerService;
         private readonly IMapper mapper;
 
-        public ModelController(IVehicleService vehicleService, IMapper mapper)
+        public ModelController(IVehicleModelService modelService, IVehicleMakeService makerService, IMapper mapper)
         {
-            this.vehicleService = vehicleService;
+            this.modelService = modelService;
+            this.makerService = makerService;
             this.mapper = mapper;
         }
 
         public IActionResult Administration(int? makeId, string find, string sortDirection, int page = 1)
         {
-            var models = vehicleService.FindModel(new Filter(find, makeId), new Sorter(sortDirection), new Pager(page, 3))
+            var models = modelService.FindModel(new Filter(find, makeId), new Sorter(sortDirection), new Pager(page, 3))
                                        .ToMappedPagedList<IVehicleModel, VehicleModelViewModel>(mapper);
 
             ViewBag.Make = makeId;
             ViewBag.SortDirection = sortDirection;
             ViewBag.Find = find;
             
-            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(vehicleService.GetMake()), "Id", "Name", makeId);
+            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(makerService.GetMake()), "Id", "Name", makeId);
 
             return View(models);
         }
@@ -40,7 +42,7 @@ namespace Projekt.MVC.Controllers
         {
             try
             {
-                vehicleService.DeleteModel(vehicleService.GetModelById(id));
+                modelService.DeleteModel(id);
                 return RedirectToAction("Administration", "Model", new { page = 1 });
             }
             catch (System.ArgumentException)
@@ -53,8 +55,8 @@ namespace Projekt.MVC.Controllers
         [HttpGet]
         public ViewResult Edit(int Id)
         {
-            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(vehicleService.GetMake()), "Id", "Name", Id);
-            return View(mapper.Map<VehicleModelViewModel>(vehicleService.GetModelById(Id)));
+            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(makerService.GetMake()), "Id", "Name", Id);
+            return View(mapper.Map<VehicleModelViewModel>(modelService.GetModelById(Id)));
         }
 
 
@@ -63,16 +65,16 @@ namespace Projekt.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                vehicleService.SaveChanges(vehicleModelEdit);
+                modelService.SaveChanges(mapper.Map < IVehicleModel > (vehicleModelEdit));
                 return RedirectToAction("Administration", "Make", new { page = 1 });
             }
-            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(vehicleService.GetMake()), "Id", "Name", vehicleModelEdit.MakeId);
+            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(makerService.GetMake()), "Id", "Name", vehicleModelEdit.MakeId);
             return View(vehicleModelEdit);
         }
 
         public IActionResult Create()
         {
-            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(vehicleService.GetMake()), "Id", "Name");
+            ViewBag.Makers = new SelectList(mapper.Map<IEnumerable<IVehicleMakePrimary>>(makerService.GetMake()), "Id", "Name");
             return View("Edit", new VehicleModelViewModel());
         }
     }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Projekt.MVC.ViewModels
 {
-    public class VehicleModelViewModel : IVehicleModel
+    public class VehicleModelViewModel
     {
         public int Id { get; set; }
 

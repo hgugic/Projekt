@@ -30,7 +30,8 @@ namespace Projekt.MVC
                                 config.GetConnectionString("VehicleDbConnection"),
                                     x => x.MigrationsAssembly("Projekt.Service")));
 
-            services.AddTransient<IVehicleService, VehicleService>();
+            services.AddTransient<IVehicleMakeService, VehicleMakeService>();
+            services.AddTransient<IVehicleModelService, VehicleModelService>();
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
